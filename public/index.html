@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Domain Whois</title>
+  <meta name="og:title" content="Domain Whois"/>
+  <meta name="og:site_name" content="Antti.Codes">
+  <meta name="og:description" content="Domain Whois provided by Antti.Codes"/>
+  <meta name="og:url" content="https://antti.codes"/>  
+  <meta name="og:type" content="website">
+  <meta name="og:locale" content="en_us">
+  <meta name="og:email" content="antti@antti.codes"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #202020;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+      font-size: 16px;
+    }
+    #top {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      margin-top: 16px;
+      font-size: 24px;
+    }
+    #top * {
+      margin: 6px;
+    }
+    #output {
+      margin-top: 32px;
+      margin-bottom: 64px;
+      max-width: min(95%, 800px);
+      font-family: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace; 
+    }
+    @media only screen and (max-width: 960px) {
+      #output {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="top">
+    <span>Domain:</span> <input id="domain" /> <button id="submit">Query</button>
+  </div>
+  <p id="output"></p>
+  <script>
+    const input = document.getElementById("domain");
+    const submit = document.getElementById("submit");
+    const output = document.getElementById("output");
+
+    async function query() {
+      try {
+        const domain = input.value;
+        if (domain === "index.html" || domain === "favicon.ico") {
+          output.innerText = "Invalid TLD";
+          return;
+        }
+        if (!/^[a-z0-9_-]+\.[a-z0-9_-]+$/i.test(domain)) {
+          output.innerText = "Unacceptable domain"
+          return;
+        }
+        const res = await fetch(`/${domain}`);
+        const data = await res.text();
+        output.innerText = data;
+      } catch(e) {
+        output.innerText = `Client error: ${e.message}`;
+      }
+    }
+ 
+    input.addEventListener("keypress", (e) => e.code == "Enter" ? query() : null);
+    submit.addEventListener("click", () => query());
+  </script>
+</body>
+</html>
