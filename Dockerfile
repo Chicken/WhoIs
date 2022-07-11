@@ -6,7 +6,7 @@ ENV NODE_ENV="production"
 
 RUN apk update && \
     apk upgrade && \
-    apk add dumb-init
+    apk add dumb-init whois
 
 RUN mkdir /app/data && \
     chown -R node:node /app
