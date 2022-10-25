@@ -4,7 +4,7 @@ const { exec } = require("child_process");
 const express = require("express");
 const app = express();
 
-app.set("trust proxy", "loopback");
+app.set("trust proxy", "loopback, linklocal, uniquelocal");
 
 app.listen(process.env.PORT || 8080, () => {
   console.log("Web server listening");
