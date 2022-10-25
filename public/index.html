@@ -74,6 +74,13 @@
  
     input.addEventListener("keypress", (e) => e.code == "Enter" ? query() : null);
     submit.addEventListener("click", () => query());
+
+    const initDomain = window.location.hash.substring(1);
+    
+    if (initDomain) {
+      input.value = initDomain;
+      query();
+    }
   </script>
 </body>
 </html>
