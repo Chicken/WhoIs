@@ -14,18 +14,20 @@ app.use(express.static("public"));
 
 const ratelimits = new Map();
 
-setInterval(() => ratelimits.clear(), 60 * 1000);
+const ratelimitInterval = parseInt(process.env.RATELIMIT_WINDOW || "60", 10) * 1000;
+const ratelimitAmount = parseInt(process.env.RATELIMIT_AMOUNT || "5", 10);
+setInterval(() => ratelimits.clear(), ratelimitInterval);
 
 app.get("/:domain", (req, res) => {
   const domain = req.params.domain;
   if (domain === "favicon.ico") return res.status(404).header("Content-type", "text/plain").send("Not found");
   console.log("Querying", domain, "for", req.ip);
   ratelimits.set(req.ip, (ratelimits.get(req.ip) ?? 0) + 1);
-  if (ratelimits.get(req.ip) >= 5) {
+  if (ratelimits.get(req.ip) >= ratelimitAmount) {
     res.status(429).header("Content-type", "text/plain").send("Requests limited to 5 per minute");
     return;
   }
-  if (/^[a-z0-9_-]+\.[a-z0-9_-]+$/i.test(domain)) {
+  if (/^[a-zåäö0-9_-]+\.[a-z0-9_-]+$/i.test(domain)) {
     exec(`whois '${domain}'`, {
       timeout: 10 * 1000,
     }, (err, stdout, stderr) => {
